@@ -14,8 +14,8 @@ export default function PrayerGrid({ schedule, nextPrayerKey }: PrayerGridProps)
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(6, 1fr)',
-        gap: '0.8rem',
-        padding: '0.25rem 1.5rem 0.5rem',
+        gap: '0.5rem',
+        padding: '0 clamp(2rem, 4vw, 5rem) 0.5rem',
         width: '100%',
         height: '100%',
       }}

@@ -226,7 +226,7 @@ export default function MainDisplay() {
           width: '100%',
           height: '100%',
           display: 'grid',
-          gridTemplateRows: '22vh 40vh 8px 22vh 8px 1fr',
+          gridTemplateRows: '22vh 36vh 8px 22vh 8px 1fr',
           transform: `translate(${burnOffset.x}px, ${burnOffset.y}px)`,
           transition: 'transform 30s ease-in-out',
         }}
@@ -252,13 +252,11 @@ export default function MainDisplay() {
         {/* ── ROW 3: Divider ── */}
         <OrnamentalDivider className="self-center" />
 
-        {/* ── ROW 4: Prayer Grid 28vh ── */}
-        <div className="py-1">
-          <PrayerGrid
-            schedule={schedule}
-            nextPrayerKey={nextPrayer?.key as any ?? null}
-          />
-        </div>
+        {/* ── ROW 4: Prayer Grid 22vh ── */}
+        <PrayerGrid
+          schedule={schedule}
+          nextPrayerKey={nextPrayer?.key as any ?? null}
+        />
 
         {/* ── ROW 5: Divider ── */}
         <OrnamentalDivider className="self-center" />

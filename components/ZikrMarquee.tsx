@@ -50,15 +50,15 @@ export default function ZikrMarquee() {
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        padding: '1.2rem 3rem',
-        minHeight: '110px',
+        padding: '0.75rem 2rem',
+        minHeight: '70px',
         height: '100%',
       }}
     >
       {/* Type label */}
       <p
         style={{
-          fontSize: 'clamp(16px, 1.4vw, 26px)',
+          fontSize: 'clamp(12px, 1vw, 20px)',
           color: tc.color,
           fontFamily: 'Cairo, sans-serif',
           fontWeight: 600,
@@ -73,7 +73,7 @@ export default function ZikrMarquee() {
       <p
         style={{
           fontFamily: current.type === 'aya' ? 'Amiri, serif' : 'Cairo, sans-serif',
-          fontSize: 'clamp(24px, 2.4vw, 48px)',
+          fontSize: 'clamp(18px, 1.8vw, 36px)',
           color: '#FAF7F0',
           lineHeight: 1.5,
           margin: 0,
@@ -88,7 +88,7 @@ export default function ZikrMarquee() {
         <p
           dir="rtl"
           style={{
-            fontSize: 'clamp(15px, 1.3vw, 24px)',
+            fontSize: 'clamp(11px, 0.9vw, 18px)',
             color: '#D4AF37',
             fontFamily: 'Reem Kufi, sans-serif',
             opacity: 0.85,

@@ -21,13 +21,13 @@ export default function PrayerCard({ nameAr, nameEs, adhanTime, iqamaTime, isNex
         WebkitBackdropFilter: 'blur(10px)',
         boxShadow: isNext ? '0 0 30px rgba(244,208,63,0.4)' : '0 4px 15px rgba(0,0,0,0.2)',
         animation: isNext ? 'goldPulse 3s ease-in-out infinite' : 'none',
-        aspectRatio: '1 / 1',
+        aspectRatio: '1 / 1.1',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        padding: 'clamp(0.5rem, 1vw, 1.2rem)',
+        padding: '0.5rem 0.3rem',
         transition: 'all 0.3s ease',
         overflow: 'hidden',
       }}
@@ -35,7 +35,7 @@ export default function PrayerCard({ nameAr, nameEs, adhanTime, iqamaTime, isNex
       {/* Arabic prayer name */}
       <p
         style={{
-          fontSize: 'clamp(18px, 1.8vw, 36px)',
+          fontSize: 'clamp(14px, 1.3vw, 24px)',
           color: '#F4D03F',
           fontFamily: 'Reem Kufi, sans-serif',
           fontWeight: 700,
@@ -50,7 +50,7 @@ export default function PrayerCard({ nameAr, nameEs, adhanTime, iqamaTime, isNex
       <p
         dir="ltr"
         style={{
-          fontSize: 'clamp(34px, 3.6vw, 72px)',
+          fontSize: 'clamp(22px, 2.2vw, 44px)',
           color: '#FFFFFF',
           fontFamily: 'Cairo, sans-serif',
           fontWeight: 900,
@@ -68,7 +68,7 @@ export default function PrayerCard({ nameAr, nameEs, adhanTime, iqamaTime, isNex
         <p
           dir="ltr"
           style={{
-            fontSize: 'clamp(14px, 1.3vw, 26px)',
+            fontSize: 'clamp(11px, 0.9vw, 18px)',
             color: '#4ADE80',
             fontFamily: 'Cairo, sans-serif',
             fontWeight: 700,
@@ -79,13 +79,13 @@ export default function PrayerCard({ nameAr, nameEs, adhanTime, iqamaTime, isNex
           {iqamaTime}
         </p>
       ) : (
-        <p style={{ fontSize: 'clamp(14px, 1.3vw, 26px)', opacity: 0, margin: '0.15rem 0' }}>—</p>
+        <p style={{ fontSize: 'clamp(11px, 0.9vw, 18px)', opacity: 0, margin: '0.15rem 0' }}>—</p>
       )}
 
       {/* Spanish name */}
       <p
         style={{
-          fontSize: 'clamp(18px, 1.8vw, 36px)',
+          fontSize: 'clamp(12px, 1vw, 20px)',
           color: '#F4D03F',
           fontFamily: 'Inter, sans-serif',
           fontWeight: 600,

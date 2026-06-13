@@ -20,16 +20,17 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
 
   return (
     <div
-      className="relative rounded-3xl overflow-hidden"
+      className="relative rounded-3xl"
       style={{
         background: 'linear-gradient(135deg, rgba(45,20,80,0.60) 0%, rgba(30,10,60,0.70) 100%)',
         border: '1.5px solid rgba(212,175,55,0.35)',
         boxShadow: '0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
         backdropFilter: 'blur(24px)',
         WebkitBackdropFilter: 'blur(24px)',
-        padding: 'clamp(16px, 2vh, 32px) clamp(32px, 4vw, 64px)',
+        padding: 'clamp(1rem, 1.5vw, 2rem) clamp(1.5rem, 2vw, 3rem)',
         width: '100%',
         maxWidth: '500px',
+        overflow: 'visible',
       }}
     >
       {/* Subtle inner glow */}
@@ -48,7 +49,7 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
           style={{
             fontFamily: 'Cairo, sans-serif',
             fontWeight: 900,
-            fontSize: 'clamp(80px, 11vw, 180px)',
+            fontSize: 'clamp(60px, 7vw, 130px)',
             color: '#FFFFFF',
             textShadow: '0 0 40px rgba(255,255,255,0.25), 0 2px 12px rgba(0,0,0,0.6)',
             letterSpacing: '-0.03em',
@@ -85,15 +86,15 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
         {/* ── Next prayer strip ── */}
         {nextPrayer && (
           <div
-            className="flex items-center justify-center flex-wrap gap-3 mt-2"
-            style={{ direction: 'rtl' }}
+            className="flex items-center justify-center flex-wrap mt-1"
+            style={{ direction: 'rtl', gap: '0.3rem' }}
           >
             {/* Prayer name */}
             <span
               style={{
                 fontFamily: 'Reem Kufi, sans-serif',
                 fontWeight: 700,
-                fontSize: 'clamp(36px, 4vw, 68px)',
+                fontSize: 'clamp(20px, 2vw, 40px)',
                 color: isUrgent ? '#FB923C' : '#F4D03F',
                 lineHeight: 1,
                 textShadow: isUrgent ? '0 0 20px rgba(251,146,60,0.5)' : 'none',
@@ -105,7 +106,7 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
             <span
               style={{
                 fontFamily: 'Cairo, sans-serif',
-                fontSize: 'clamp(28px, 3vw, 50px)',
+                fontSize: 'clamp(16px, 1.4vw, 28px)',
                 color: '#C8C2B0',
                 lineHeight: 1,
               }}
@@ -119,7 +120,7 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
               style={{
                 fontFamily: 'Cairo, sans-serif',
                 fontWeight: 900,
-                fontSize: 'clamp(42px, 4.5vw, 78px)',
+                fontSize: 'clamp(32px, 3.5vw, 65px)',
                 color: isUrgent ? '#FB923C' : '#4ADE80',
                 lineHeight: 1,
                 letterSpacing: '0.04em',
@@ -132,15 +133,15 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
 
             {/* Adhan + Iqama times */}
             <div
-              className="flex items-center gap-3"
+              className="flex items-center"
               dir="ltr"
-              style={{ unicodeBidi: 'isolate' }}
+              style={{ gap: '0.3rem', unicodeBidi: 'isolate' }}
             >
               <span
                 style={{
                   fontFamily: 'Cairo, sans-serif',
                   fontWeight: 700,
-                  fontSize: 'clamp(28px, 3vw, 50px)',
+                  fontSize: 'clamp(16px, 1.4vw, 28px)',
                   color: '#D4AF37',
                   lineHeight: 1,
                 }}
@@ -154,7 +155,7 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
                     style={{
                       fontFamily: 'Cairo, sans-serif',
                       fontWeight: 700,
-                      fontSize: 'clamp(26px, 2.8vw, 46px)',
+                      fontSize: 'clamp(16px, 1.4vw, 28px)',
                       color: '#4ADE80',
                       lineHeight: 1,
                     }}
