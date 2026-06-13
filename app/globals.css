@@ -3,25 +3,114 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-deep: #0A2E26;
+  --bg-card: #103D32;
+  --bg-elevated: #1A5546;
+  --gold: #D4AF37;
+  --gold-bright: #F4D03F;
+  --gold-dim: #9C7F25;
+  --text-primary: #FAF7F0;
+  --text-secondary: #C8C2B0;
+  --text-muted: #8B8676;
+  --accent-next: #4ADE80;
+  --accent-warning: #FB923C;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-deep); /* fallback while image loads */
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: transparent; /* let fixed background divs show through */
+  color: var(--text-primary);
+  font-family: 'Cairo', 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+* {
+  user-select: none;
+  -webkit-user-select: none;
 }
+
+::-webkit-scrollbar { display: none; }
+
+body.no-cursor * { cursor: none !important; }
+
+/* Prayer card active glow */
+.prayer-card-active {
+  border: 2px solid var(--gold-bright);
+  box-shadow: 0 0 24px rgba(212,175,55,0.2), inset 0 0 30px rgba(212,175,55,0.04);
+}
+
+/* Gold pulse animation for next prayer card */
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 24px rgba(212,175,55,0.2); }
+  50%       { box-shadow: 0 0 36px rgba(212,175,55,0.4), 0 0 60px rgba(212,175,55,0.1); }
+}
+.gold-pulse {
+  animation: goldPulse 3s ease-in-out infinite;
+}
+
+/* Ornamental gold divider line */
+.ornament-line {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(156,127,37,0.4) 20%,
+    rgba(212,175,55,0.7) 50%,
+    rgba(156,127,37,0.4) 80%,
+    transparent 100%);
+}
+
+/* Adhan screen base */
+.adhan-screen {
+  background: linear-gradient(135deg, #050F0C 0%, #0A2E26 40%, #0D3B2E 100%);
+}
+
+/* Adhan text */
+.adhan-text {
+  font-family: 'Amiri', serif;
+  color: var(--text-primary);
+  text-align: center;
+  direction: rtl;
+  line-height: 1.7;
+}
+
+/* Adhan entrance fade */
+@keyframes fadeInSlow {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Adhan icon pulse */
+@keyframes adhanPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.75; transform: scale(1.03); }
+}
+
+/* Burn-in prevention — very slow, subtle drift */
+@keyframes burnInDrift {
+  0%   { transform: translate(0px, 0px); }
+  16%  { transform: translate(2px, 1px); }
+  33%  { transform: translate(-1px, 2px); }
+  50%  { transform: translate(1px, -2px); }
+  66%  { transform: translate(-2px, 1px); }
+  83%  { transform: translate(1px, 2px); }
+  100% { transform: translate(0px, 0px); }
+}
+
+/* Ensure DynamicBackground z-layers work */
+.fixed.-z-20 { z-index: -20; }
+.fixed.-z-10 { z-index: -10; }
