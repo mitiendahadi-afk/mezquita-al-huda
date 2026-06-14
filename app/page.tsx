@@ -17,6 +17,7 @@ import { calculatePrayerSchedule, getNextPrayer, isAdhanTime, isIqamaTime, type 
 import { getDateInfo, type DateInfo } from '@/lib/hijri';
 import { fetchWeather, type WeatherData } from '@/lib/weather';
 import { loadSettings, type AdminSettings } from '@/lib/iqamaSettings';
+import { useRobustClock } from '@/hooks/useRobustClock';
 
 type ScreenMode = 'main' | 'adhan' | 'iqama';
 
@@ -39,6 +40,9 @@ export default function MainDisplay() {
   const lastAdhanRef     = useRef<string>('');
   const lastIqamaRef     = useRef<string>('');
   const audioRef         = useRef<HTMLAudioElement | null>(null);
+
+  // Robust clock — survives Android WebView timer throttling
+  const robustNow = useRobustClock();
 
   // Settings
   useEffect(() => {
@@ -72,10 +76,20 @@ export default function MainDisplay() {
     return () => clearInterval(id);
   }, []);
 
-  // Auto-reload hourly
+  // Visibility recovery: dispatch clock-recovery so useRobustClock restarts its interval
   useEffect(() => {
-    const id = setInterval(() => window.location.reload(), 60 * 60 * 1000);
-    return () => clearInterval(id);
+    const recover = () => {
+      window.dispatchEvent(new Event('clock-recovery'));
+    };
+    const onVisibility = () => { if (!document.hidden) recover(); };
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('focus', recover);
+    window.addEventListener('online', recover);
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('focus', recover);
+      window.removeEventListener('online', recover);
+    };
   }, []);
 
   // Weather
@@ -88,52 +102,47 @@ export default function MainDisplay() {
     return () => clearInterval(id);
   }, [settings?.weatherEnabled, settings?.weatherApiKey]);
 
-  // 1-second tick: clock + prayer calculations
+  // Prayer calculations — re-run every second driven by useRobustClock
   useEffect(() => {
-    const tick = () => {
-      const now = new Date();
+    const now = robustNow;
 
-      setTime(now.toLocaleTimeString('en-GB', {
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        hour12: false, timeZone: 'Atlantic/Canary',
-      }));
-      setDateInfo(getDateInfo(now));
+    setTime(now.toLocaleTimeString('en-GB', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+      hour12: false, timeZone: 'Atlantic/Canary',
+    }));
+    setDateInfo(getDateInfo(now));
 
-      const sch = calculatePrayerSchedule(now, settings?.iqamaOffsets);
-      setSchedule(sch);
+    const sch = calculatePrayerSchedule(now, settings?.iqamaOffsets);
+    setSchedule(sch);
 
-      const next = getNextPrayer(sch, now);
-      setNextPrayer(next ? { key: next.key, entry: next.entry, secondsUntil: next.secondsUntil } : null);
+    const next = getNextPrayer(sch, now);
+    setNextPrayer(next ? { key: next.key, entry: next.entry, secondsUntil: next.secondsUntil } : null);
 
-      // Adhan trigger
-      const adhanPrayer = isAdhanTime(sch, now);
-      if (adhanPrayer && lastAdhanRef.current !== adhanPrayer.key + now.toDateString()) {
-        lastAdhanRef.current = adhanPrayer.key + now.toDateString();
-        setActiveEntry(adhanPrayer.entry);
-        setActivePrayerKey(adhanPrayer.key);
-        setScreenMode('adhan');
-        if (settings?.audio?.enabled) {
-          playAdhan(adhanPrayer.key === 'fajr', settings.audio.reader, settings.audio.volume);
-        }
-        if (adhanTimeoutRef.current) clearTimeout(adhanTimeoutRef.current);
-        adhanTimeoutRef.current = setTimeout(() => setScreenMode('main'), 3 * 60 * 1000);
+    // Adhan trigger
+    const adhanPrayer = isAdhanTime(sch, now);
+    if (adhanPrayer && lastAdhanRef.current !== adhanPrayer.key + now.toDateString()) {
+      lastAdhanRef.current = adhanPrayer.key + now.toDateString();
+      setActiveEntry(adhanPrayer.entry);
+      setActivePrayerKey(adhanPrayer.key);
+      setScreenMode('adhan');
+      if (settings?.audio?.enabled) {
+        playAdhan(adhanPrayer.key === 'fajr', settings.audio.reader, settings.audio.volume);
       }
+      if (adhanTimeoutRef.current) clearTimeout(adhanTimeoutRef.current);
+      adhanTimeoutRef.current = setTimeout(() => setScreenMode('main'), 3 * 60 * 1000);
+    }
 
-      // Iqama trigger
-      const iqamaPrayer = isIqamaTime(sch, now);
-      if (iqamaPrayer && lastIqamaRef.current !== iqamaPrayer.key + now.toDateString()) {
-        lastIqamaRef.current = iqamaPrayer.key + now.toDateString();
-        setActiveEntry(iqamaPrayer.entry);
-        setScreenMode('iqama');
-        if (iqamaTimeoutRef.current) clearTimeout(iqamaTimeoutRef.current);
-        iqamaTimeoutRef.current = setTimeout(() => setScreenMode('main'), 60 * 1000);
-      }
-    };
-
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [settings]);
+    // Iqama trigger
+    const iqamaPrayer = isIqamaTime(sch, now);
+    if (iqamaPrayer && lastIqamaRef.current !== iqamaPrayer.key + now.toDateString()) {
+      lastIqamaRef.current = iqamaPrayer.key + now.toDateString();
+      setActiveEntry(iqamaPrayer.entry);
+      setScreenMode('iqama');
+      if (iqamaTimeoutRef.current) clearTimeout(iqamaTimeoutRef.current);
+      iqamaTimeoutRef.current = setTimeout(() => setScreenMode('main'), 60 * 1000);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [robustNow, settings]);
 
   const playAdhan = (isFajr: boolean, reader: string, volume: number) => {
     try {

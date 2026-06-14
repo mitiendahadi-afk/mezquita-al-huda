@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import SafetyReload from '@/components/SafetyReload';
 
 export const metadata: Metadata = {
   title: 'مسجد الهدى - كوستا كالما | Mezquita Al Huda Costa Calma',
@@ -22,6 +23,9 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=1366, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <meta name="theme-color" content="#0A2E26" />
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
         <link rel="icon" type="image/png" href="/icons/logo.png" />
         <link rel="apple-touch-icon" href="/icons/logo.png" />
         <link
@@ -30,6 +34,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-bg-deep text-text-primary overflow-hidden w-screen h-screen">
+        <SafetyReload />
         {children}
       </body>
     </html>
