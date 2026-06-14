@@ -15,7 +15,6 @@ import IqamaScreen from '@/components/IqamaScreen';
 
 import { calculatePrayerSchedule, getNextPrayer, isAdhanTime, isIqamaTime, type PrayerSchedule } from '@/lib/prayerCalc';
 import { getDateInfo, type DateInfo } from '@/lib/hijri';
-import { fetchWeather, type WeatherData } from '@/lib/weather';
 import { loadSettings, type AdminSettings } from '@/lib/iqamaSettings';
 import { useRobustClock } from '@/hooks/useRobustClock';
 
@@ -26,8 +25,6 @@ export default function MainDisplay() {
   const [dateInfo, setDateInfo]   = useState<DateInfo | null>(null);
   const [schedule, setSchedule]   = useState<PrayerSchedule | null>(null);
   const [nextPrayer, setNextPrayer] = useState<{ key: string; entry: any; secondsUntil: number } | null>(null);
-  const [weather, setWeather]     = useState<WeatherData | null>(null);
-  const [isOffline, setIsOffline] = useState(false);
   const [screenMode, setScreenMode] = useState<ScreenMode>('main');
   const [activeEntry, setActiveEntry] = useState<any>(null);
   const [activePrayerKey, setActivePrayerKey] = useState<string>('');
@@ -50,16 +47,6 @@ export default function MainDisplay() {
     const onStorage = () => setSettings(loadSettings());
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
-  }, []);
-
-  // Online/offline
-  useEffect(() => {
-    const on  = () => setIsOffline(false);
-    const off = () => setIsOffline(true);
-    window.addEventListener('online', on);
-    window.addEventListener('offline', off);
-    setIsOffline(!navigator.onLine);
-    return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off); };
   }, []);
 
   // Cursor hide after 3s
@@ -91,16 +78,6 @@ export default function MainDisplay() {
       window.removeEventListener('online', recover);
     };
   }, []);
-
-  // Weather
-  useEffect(() => {
-    const apiKey = settings?.weatherApiKey || process.env.NEXT_PUBLIC_WEATHER_API_KEY || '';
-    if (!settings?.weatherEnabled || !apiKey) return;
-    const doFetch = () => fetchWeather(apiKey).then(w => w && setWeather(w));
-    doFetch();
-    const id = setInterval(doFetch, 30 * 60 * 1000);
-    return () => clearInterval(id);
-  }, [settings?.weatherEnabled, settings?.weatherApiKey]);
 
   // Prayer calculations — re-run every second driven by useRobustClock
   useEffect(() => {
@@ -241,10 +218,7 @@ export default function MainDisplay() {
         }}
       >
         {/* ── ROW 1: Header 12vh ── */}
-        <HeaderBar
-          weather={settings?.weatherEnabled ? weather : null}
-          isOffline={isOffline}
-        />
+        <HeaderBar />
 
         {/* ── ROW 2: Clock Card + Date 50vh ── */}
         <div

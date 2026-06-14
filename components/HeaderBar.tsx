@@ -1,14 +1,8 @@
 'use client';
 
 import WeatherWidget from './WeatherWidget';
-import { type WeatherData } from '@/lib/weather';
 
-interface HeaderBarProps {
-  weather: WeatherData | null;
-  isOffline: boolean;
-}
-
-export default function HeaderBar({ weather, isOffline }: HeaderBarProps) {
+export default function HeaderBar() {
   return (
     <header
       style={{
@@ -27,29 +21,9 @@ export default function HeaderBar({ weather, isOffline }: HeaderBarProps) {
           left: '2.5rem',
           transform: 'translateY(-50%)',
           zIndex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          gap: '4px',
         }}
       >
-        <WeatherWidget weather={weather} />
-        {isOffline && (
-          <div
-            style={{
-              background: 'rgba(251,146,60,0.15)',
-              border: '1px solid rgba(251,146,60,0.5)',
-              fontSize: 'clamp(11px, 1vw, 16px)',
-              color: '#FB923C',
-              fontFamily: 'Cairo',
-              padding: '2px 8px',
-              borderRadius: '6px',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            بدون اتصال
-          </div>
-        )}
+        <WeatherWidget />
       </div>
 
       {/* Official logo — absolute top-right, large */}
