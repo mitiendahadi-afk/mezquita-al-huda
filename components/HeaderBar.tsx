@@ -17,10 +17,9 @@ export default function HeaderBar() {
       <div
         style={{
           position: 'absolute',
-          top: '50%',
-          left: '2.5rem',
-          transform: 'translateY(-50%)',
-          zIndex: 1,
+          top: '1.5rem',
+          left: '3rem',
+          zIndex: 20,
         }}
       >
         <WeatherWidget />
@@ -88,6 +87,7 @@ export default function HeaderBar() {
             lineHeight: 1,
             direction: 'ltr',
             margin: 0,
+            marginTop: '1.2rem',
             textAlign: 'center',
           }}
         >
