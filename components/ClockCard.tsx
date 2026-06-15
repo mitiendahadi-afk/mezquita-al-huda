@@ -22,11 +22,9 @@ export default function ClockCard({ time, nextPrayer }: ClockCardProps) {
     <div
       className="relative rounded-3xl"
       style={{
-        background: 'linear-gradient(135deg, rgba(45,20,80,0.60) 0%, rgba(30,10,60,0.70) 100%)',
+        background: 'linear-gradient(135deg, rgba(22,8,45,0.94) 0%, rgba(14,5,30,0.96) 100%)',
         border: '1.5px solid rgba(212,175,55,0.35)',
-        boxShadow: '0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
-        backdropFilter: 'blur(24px)',
-        WebkitBackdropFilter: 'blur(24px)',
+        boxShadow: '0 16px 40px rgba(0,0,0,0.60)',
         padding: 'clamp(1rem, 1.5vw, 2rem) clamp(1.5rem, 2vw, 3rem)',
         width: '100%',
         maxWidth: '500px',

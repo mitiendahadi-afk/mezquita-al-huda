@@ -1,12 +1,13 @@
 'use client';
 
+import { memo } from 'react';
 import { type DateInfo } from '@/lib/hijri';
 
 interface DateDisplayProps {
   dateInfo: DateInfo;
 }
 
-export default function DateDisplay({ dateInfo }: DateDisplayProps) {
+function DateDisplay({ dateInfo }: DateDisplayProps) {
   return (
     <div className="flex items-center justify-center gap-6 flex-wrap px-4" style={{ direction: 'rtl' }}>
       {/* Arabic date */}
@@ -54,3 +55,5 @@ export default function DateDisplay({ dateInfo }: DateDisplayProps) {
     </div>
   );
 }
+
+export default memo(DateDisplay);

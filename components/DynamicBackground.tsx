@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, memo } from 'react';
 
 const BACKGROUNDS = [
   '/backgrounds/geometric.jpg',
@@ -8,40 +8,46 @@ const BACKGROUNDS = [
   '/backgrounds/sunrise.jpg',
 ];
 
-export default function DynamicBackground() {
+function DynamicBackground() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextIndex, setNextIndex]       = useState(1);
   const [transitioning, setTransitioning] = useState(false);
+  const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Preload all images on mount
   useEffect(() => {
     BACKGROUNDS.forEach(src => {
       const img = new window.Image();
       img.src = src;
     });
-    console.log('✅ All backgrounds preloaded:', BACKGROUNDS);
   }, []);
 
-  // Rotate every 5 minutes with a 2-second cross-fade
   useEffect(() => {
+    // 10-minute rotation (was 5 min — halves GPU transition work)
     const id = setInterval(() => {
       setTransitioning(true);
-      setTimeout(() => {
-        setCurrentIndex(nextIndex);
-        setNextIndex(ni => (ni + 1) % BACKGROUNDS.length);
+      // Clear any previous orphaned transition timeout before starting new one
+      if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = setTimeout(() => {
+        setCurrentIndex(prev => (prev + 1) % BACKGROUNDS.length);
+        setNextIndex(prev => (prev + 1) % BACKGROUNDS.length);
         setTransitioning(false);
-        console.log('🔄 Background changed to:', BACKGROUNDS[nextIndex]);
+        transitionTimeoutRef.current = null;
       }, 2000);
-    }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, [nextIndex]);
+    }, 10 * 60 * 1000);
+
+    return () => {
+      clearInterval(id);
+      if (transitionTimeoutRef.current) clearTimeout(transitionTimeoutRef.current);
+    };
+  // No nextIndex in deps — indices managed internally to avoid effect restart loop
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
       aria-hidden="true"
       style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}
     >
-      {/* Current image — fades out during transition */}
       <img
         src={BACKGROUNDS[currentIndex]}
         alt=""
@@ -53,8 +59,6 @@ export default function DynamicBackground() {
           transition: 'opacity 2s ease-in-out',
         }}
       />
-
-      {/* Next image — fades in during transition */}
       <img
         src={BACKGROUNDS[nextIndex]}
         alt=""
@@ -66,8 +70,6 @@ export default function DynamicBackground() {
           transition: 'opacity 2s ease-in-out',
         }}
       />
-
-      {/* Dark green overlay for text readability */}
       <div
         style={{
           position: 'absolute', inset: 0,
@@ -77,3 +79,5 @@ export default function DynamicBackground() {
     </div>
   );
 }
+
+export default memo(DynamicBackground);

@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import PrayerCard from './PrayerCard';
 import { type PrayerSchedule, type PrayerKey } from '@/lib/prayerCalc';
 
@@ -8,7 +9,7 @@ interface PrayerGridProps {
   nextPrayerKey: PrayerKey | null;
 }
 
-export default function PrayerGrid({ schedule, nextPrayerKey }: PrayerGridProps) {
+function PrayerGrid({ schedule, nextPrayerKey }: PrayerGridProps) {
   return (
     // dir="rtl": first child renders at right edge → fajr appears rightmost
     <div
@@ -33,3 +34,5 @@ export default function PrayerGrid({ schedule, nextPrayerKey }: PrayerGridProps)
     </div>
   );
 }
+
+export default memo(PrayerGrid);

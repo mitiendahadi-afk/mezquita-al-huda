@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react';
 import DynamicBackground from '@/components/DynamicBackground';
-import IslamicPattern from '@/components/IslamicPattern';
 import HeaderBar from '@/components/HeaderBar';
 import ClockCard from '@/components/ClockCard';
 import DateDisplay from '@/components/DateDisplay';
@@ -17,6 +16,8 @@ import { calculatePrayerSchedule, getNextPrayer, isAdhanTime, isIqamaTime, type 
 import { getDateInfo, type DateInfo } from '@/lib/hijri';
 import { loadSettings, type AdminSettings } from '@/lib/iqamaSettings';
 import { useRobustClock } from '@/hooks/useRobustClock';
+import { recordRender, recordClockUpdate, recordError } from '@/lib/diagnostics';
+import DiagnosticPanel from '@/components/DiagnosticPanel';
 
 type ScreenMode = 'main' | 'adhan' | 'iqama';
 
@@ -37,6 +38,9 @@ export default function MainDisplay() {
   const lastAdhanRef     = useRef<string>('');
   const lastIqamaRef     = useRef<string>('');
   const audioRef         = useRef<HTMLAudioElement | null>(null);
+  // Refs so the tick effect always sees the latest schedule without re-subscribing
+  const scheduleRef      = useRef<PrayerSchedule | null>(null);
+  const dayRef           = useRef<string>('');
 
   // Robust clock — survives Android WebView timer throttling
   const robustNow = useRobustClock();
@@ -47,6 +51,23 @@ export default function MainDisplay() {
     const onStorage = () => setSettings(loadSettings());
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  // Diagnostic: count every render of this component
+  useEffect(() => { recordRender(); });
+
+  // Diagnostic: capture unhandled JS errors
+  useEffect(() => {
+    const onError = (e: ErrorEvent) =>
+      recordError(`${e.message} @ ${e.filename?.split('/').pop() ?? '?'}:${e.lineno}`);
+    const onRejection = (e: PromiseRejectionEvent) =>
+      recordError(`UnhandledRejection: ${String(e.reason)}`);
+    window.addEventListener('error', onError);
+    window.addEventListener('unhandledrejection', onRejection);
+    return () => {
+      window.removeEventListener('error', onError);
+      window.removeEventListener('unhandledrejection', onRejection);
+    };
   }, []);
 
   // Cursor hide after 3s
@@ -79,7 +100,20 @@ export default function MainDisplay() {
     };
   }, []);
 
-  // Prayer calculations — re-run every second driven by useRobustClock
+  // SCHEDULE: recalculates once per day (or when settings change) — NOT every second
+  useEffect(() => {
+    const now = robustNow;
+    const day = now.toDateString();
+    if (day === dayRef.current && scheduleRef.current !== null) return;
+    dayRef.current = day;
+    const sch = calculatePrayerSchedule(now, settings?.iqamaOffsets);
+    scheduleRef.current = sch;
+    setSchedule(sch);
+    setDateInfo(getDateInfo(now));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [robustNow, settings]);
+
+  // TICK: runs every second — only updates time string, countdown, and adhan/iqama triggers
   useEffect(() => {
     const now = robustNow;
 
@@ -87,10 +121,10 @@ export default function MainDisplay() {
       hour: '2-digit', minute: '2-digit', second: '2-digit',
       hour12: false, timeZone: 'Atlantic/Canary',
     }));
-    setDateInfo(getDateInfo(now));
+    recordClockUpdate();
 
-    const sch = calculatePrayerSchedule(now, settings?.iqamaOffsets);
-    setSchedule(sch);
+    const sch = scheduleRef.current;
+    if (!sch) return;
 
     const next = getNextPrayer(sch, now);
     setNextPrayer(next ? { key: next.key, entry: next.entry, secondsUntil: next.secondsUntil } : null);
@@ -119,7 +153,7 @@ export default function MainDisplay() {
       iqamaTimeoutRef.current = setTimeout(() => setScreenMode('main'), 60 * 1000);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [robustNow, settings]);
+  }, [robustNow]);
 
   const playAdhan = (isFajr: boolean, reader: string, volume: number) => {
     try {
@@ -188,6 +222,9 @@ export default function MainDisplay() {
     >
       {/* Background sits at zIndex 0 inside isolation context */}
       <DynamicBackground />
+
+      {/* Diagnostic panel — always mounted, visible via ?debug or 5×tap bottom-left */}
+      <DiagnosticPanel />
 
       {/* Fullscreen button — outside transform container so it stays fixed to viewport */}
       {showFsBtn && (

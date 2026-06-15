@@ -1,10 +1,12 @@
 'use client';
 
+import { memo } from 'react';
+
 interface OrnamentalDividerProps {
   className?: string;
 }
 
-export default function OrnamentalDivider({ className = '' }: OrnamentalDividerProps) {
+function OrnamentalDivider({ className = '' }: OrnamentalDividerProps) {
   return (
     <div className={`flex items-center gap-3 px-4 ${className}`}>
       <div className="flex-1 ornament-line" />
@@ -18,3 +20,5 @@ export default function OrnamentalDivider({ className = '' }: OrnamentalDividerP
     </div>
   );
 }
+
+export default memo(OrnamentalDivider);

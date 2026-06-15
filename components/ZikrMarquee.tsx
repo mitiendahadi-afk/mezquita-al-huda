@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { buildZikrPlaylist, getZikrText, type ZikrItem } from '@/lib/azkar';
 
-export default function ZikrMarquee() {
+function ZikrMarquee() {
   const [playlist, setPlaylist] = useState<ZikrItem[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -41,10 +41,8 @@ export default function ZikrMarquee() {
   return (
     <div
       style={{
-        background: 'linear-gradient(180deg, rgba(10,46,38,0.60) 0%, rgba(10,46,38,0.88) 100%)',
+        background: 'linear-gradient(180deg, rgba(8,38,30,0.90) 0%, rgba(6,28,22,0.96) 100%)',
         borderTop: '1px solid rgba(212,175,55,0.30)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -103,3 +101,5 @@ export default function ZikrMarquee() {
     </div>
   );
 }
+
+export default memo(ZikrMarquee);

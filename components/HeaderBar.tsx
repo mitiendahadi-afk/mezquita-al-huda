@@ -1,8 +1,9 @@
 'use client';
 
+import { memo } from 'react';
 import WeatherWidget from './WeatherWidget';
 
-export default function HeaderBar() {
+function HeaderBar() {
   return (
     <header
       style={{
@@ -97,3 +98,5 @@ export default function HeaderBar() {
     </header>
   );
 }
+
+export default memo(HeaderBar);

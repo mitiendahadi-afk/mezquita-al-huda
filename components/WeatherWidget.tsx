@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { recordWeatherUpdate } from '@/lib/diagnostics';
 
 interface WeatherData {
   temp: number;
@@ -19,64 +20,93 @@ const ICONS: Record<string, string> = {
   '50d': '🌫️', '50n': '🌫️',
 };
 
-// Costa Calma, Fuerteventura
 const LAT = 28.1597;
 const LON = -14.2289;
+const CACHE_KEY = 'alhuda_weather_v1';
+const CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const FETCH_INTERVAL = 60 * 60 * 1000; // refetch every 60 min
+
+function loadCached(): WeatherData | null {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw) as { data: WeatherData; ts: number };
+    if (Date.now() - ts < CACHE_TTL) return data;
+  } catch {}
+  return null;
+}
+
+function saveCache(data: WeatherData) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+  } catch {}
+}
 
 export default function WeatherWidget() {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [weather, setWeather] = useState<WeatherData | null>(() => loadCached());
 
   useEffect(() => {
+    const key = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+    if (!key) return;
+
+    let aborted = false;
+
     const fetchWeather = async () => {
-      const key = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
-      if (!key) return;
       try {
         const res = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${key}&units=metric&lang=es`
+          `https://api.openweathermap.org/data/2.5/weather?lat=${LAT}&lon=${LON}&appid=${key}&units=metric&lang=es`,
+          { cache: 'no-store' }
         );
-        if (!res.ok) return;
+        if (!res.ok || aborted) return;
         const d = await res.json();
-        setWeather({
+        const data: WeatherData = {
           temp: Math.round(d.main.temp),
           description: d.weather[0].description,
           icon: d.weather[0].icon,
-        });
+        };
+        if (!aborted) {
+          saveCache(data);
+          setWeather(data);
+          recordWeatherUpdate();
+        }
       } catch {
-        // silently fail — weather is non-critical
+        // non-critical — keep showing cached data
       }
     };
 
     fetchWeather();
-    const id = setInterval(fetchWeather, 30 * 60 * 1000);
-    return () => clearInterval(id);
+    const id = setInterval(fetchWeather, FETCH_INTERVAL);
+
+    return () => {
+      aborted = true;
+      clearInterval(id);
+    };
   }, []);
 
   if (!weather) return null;
 
   return (
+    // No backdropFilter — solid bg avoids GPU compositing on Android TV
     <div
       style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '0.5rem 1rem',
-        background: 'rgba(10,46,38,0.55)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        borderRadius: '1rem',
-        border: '1px solid rgba(212,175,55,0.30)',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-        minWidth: '90px',
+        padding: '0.4rem 0.9rem',
+        background: 'rgba(8,35,28,0.92)',
+        borderRadius: '0.75rem',
+        border: '1px solid rgba(212,175,55,0.25)',
+        minWidth: '80px',
       }}
     >
-      <div style={{ fontSize: 'clamp(28px, 3vw, 52px)', lineHeight: 1, marginBottom: '0.2rem' }}>
+      <div style={{ fontSize: 'clamp(24px, 2.8vw, 46px)', lineHeight: 1, marginBottom: '0.15rem' }}>
         {ICONS[weather.icon] ?? '🌤️'}
       </div>
       <div
         dir="ltr"
         style={{
-          fontSize: 'clamp(22px, 2.2vw, 42px)',
+          fontSize: 'clamp(20px, 2vw, 38px)',
           color: '#FFFFFF',
           fontWeight: 900,
           fontFamily: 'Cairo, sans-serif',
@@ -88,14 +118,14 @@ export default function WeatherWidget() {
       </div>
       <div
         style={{
-          fontSize: 'clamp(10px, 0.9vw, 16px)',
+          fontSize: 'clamp(10px, 0.85vw, 14px)',
           color: '#F4D03F',
           fontFamily: 'Inter, sans-serif',
           fontWeight: 500,
           textTransform: 'capitalize',
-          marginTop: '0.2rem',
+          marginTop: '0.15rem',
           textAlign: 'center',
-          maxWidth: '100px',
+          maxWidth: '90px',
           lineHeight: 1.1,
         }}
       >
