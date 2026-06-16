@@ -44,7 +44,9 @@ export interface DateInfo {
 }
 
 export function getDateInfo(date: Date): DateInfo {
-  const { year, month, day } = toHijri(date);
+  // +1 day offset: practical Islamic calendar advances at Maghrib of the previous day
+  const hijriDate = new Date(date.getTime() + 86_400_000);
+  const { year, month, day } = toHijri(hijriDate);
 
   const dayIndex = date.getDay();
   const monthIndex = date.getMonth();
