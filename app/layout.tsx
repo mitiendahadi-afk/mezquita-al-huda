@@ -1,4 +1,4 @@
-import type { Metadata, Viewport } from 'next';
+import type { Metadata } from 'next';
 import './globals.css';
 import SafetyReload from '@/components/SafetyReload';
 
@@ -13,14 +13,6 @@ export const metadata: Metadata = {
   },
 };
 
-// TV display needs fixed 1366px viewport. Mobile sub-routes override this via their own viewport export.
-export const viewport: Viewport = {
-  width: '1366',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -29,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <head>
+        <meta name="viewport" content="width=1366, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <meta name="theme-color" content="#0A2E26" />
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
