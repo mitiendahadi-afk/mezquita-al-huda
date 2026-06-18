@@ -44,8 +44,16 @@ export interface DateInfo {
 }
 
 export function getDateInfo(date: Date): DateInfo {
-  // +1 day offset: practical Islamic calendar advances at Maghrib of the previous day
-  const hijriDate = new Date(date.getTime() + 86_400_000);
+  // Floor to local midnight — same local-time basis as the Gregorian date lines below.
+  // Then add 2 days rather than 1: local midnight is ~23:00 UTC (UTC+1 summer), so
+  // +1 day only reaches 23:00 UTC of localDate — still below the noon-UTC JD boundary,
+  // giving the PREVIOUS JD (wrong day). +2 days lands at 23:00 UTC of localDate+1,
+  // which is safely past noon UTC → correct JD → stable Hijri result all day.
+  // Semantically identical to +1 day at noon UTC (the calibrated working state):
+  //   localMidnight + 2 days  ≡  raw UTC noon + 1 day  (both → JD 2461211 for Jun 18)
+  const localMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // +1 day offset: Islamic calendar day begins at Maghrib of the previous Gregorian day
+  const hijriDate = new Date(localMidnight.getTime() + 2 * 86_400_000);
   const { year, month, day } = toHijri(hijriDate);
 
   const dayIndex = date.getDay();
