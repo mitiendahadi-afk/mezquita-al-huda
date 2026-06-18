@@ -12,7 +12,7 @@ import AnnouncementsBar from '@/components/AnnouncementsBar';
 import AdhanScreen from '@/components/AdhanScreen';
 import IqamaScreen from '@/components/IqamaScreen';
 
-import { calculatePrayerSchedule, getNextPrayer, isAdhanTime, isIqamaTime, type PrayerSchedule } from '@/lib/prayerCalc';
+import { calculatePrayerSchedule, getNextPrayer, isAdhanTime, isIqamaTime, type PrayerSchedule, type PrayerEntry } from '@/lib/prayerCalc';
 import { getDateInfo, type DateInfo } from '@/lib/hijri';
 import { loadSettings, type AdminSettings } from '@/lib/iqamaSettings';
 import { useRobustClock } from '@/hooks/useRobustClock';
