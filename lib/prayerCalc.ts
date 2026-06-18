@@ -140,8 +140,8 @@ export function isAdhanTime(schedule: PrayerSchedule, now: Date): { key: PrayerK
   for (const key of prayerKeys) {
     const entry = schedule[key];
     if (entry.adhanTime) {
-      const diff = Math.abs(nowMs - entry.adhanTime.getTime());
-      if (diff < 3 * 60 * 1000) {
+      const adhanMs = entry.adhanTime.getTime();
+      if (nowMs >= adhanMs && nowMs < adhanMs + 3 * 60 * 1000) {
         return { key, entry };
       }
     }
@@ -156,8 +156,8 @@ export function isIqamaTime(schedule: PrayerSchedule, now: Date): { key: PrayerK
   for (const key of prayerKeys) {
     const entry = schedule[key];
     if (entry.iqamaTime) {
-      const diff = Math.abs(nowMs - entry.iqamaTime.getTime());
-      if (diff < 60 * 1000) {
+      const iqamaMs = entry.iqamaTime.getTime();
+      if (nowMs >= iqamaMs && nowMs < iqamaMs + 60 * 1000) {
         return { key, entry };
       }
     }
