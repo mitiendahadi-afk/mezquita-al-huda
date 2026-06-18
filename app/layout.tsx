@@ -28,10 +28,6 @@ export default function RootLayout({
         <meta httpEquiv="Expires" content="0" />
         <link rel="icon" type="image/png" href="/icons/logo.png" />
         <link rel="apple-touch-icon" href="/icons/logo.png" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;900&family=Reem+Kufi:wght@500;700&family=Inter:wght@400;600;700&display=swap"
-          rel="stylesheet"
-        />
       </head>
       <body className="bg-bg-deep text-text-primary overflow-hidden w-screen h-screen">
         <SafetyReload />
