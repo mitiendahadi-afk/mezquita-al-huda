@@ -14,7 +14,7 @@ const DEFAULT_IQAMA_OFFSETS: IqamaOffsets = {
   fajr: 10,
   dhuhr: 10,
   asr: 10,
-  maghrib: 10,
+  maghrib: 8,
   isha: 10,
 };
 
