@@ -150,7 +150,7 @@ export default function MainDisplay() {
       setActiveEntry(iqamaPrayer.entry);
       setScreenMode('iqama');
       if (iqamaTimeoutRef.current) clearTimeout(iqamaTimeoutRef.current);
-      iqamaTimeoutRef.current = setTimeout(() => setScreenMode('main'), 60 * 1000);
+      iqamaTimeoutRef.current = setTimeout(() => setScreenMode('main'), 4 * 60 * 1000);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [robustNow]);

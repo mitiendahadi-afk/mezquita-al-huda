@@ -157,7 +157,7 @@ export function isIqamaTime(schedule: PrayerSchedule, now: Date): { key: PrayerK
     const entry = schedule[key];
     if (entry.iqamaTime) {
       const iqamaMs = entry.iqamaTime.getTime();
-      if (nowMs >= iqamaMs && nowMs < iqamaMs + 60 * 1000) {
+      if (nowMs >= iqamaMs && nowMs < iqamaMs + 4 * 60 * 1000) {
         return { key, entry };
       }
     }
