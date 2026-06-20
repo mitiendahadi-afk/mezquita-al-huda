@@ -117,17 +117,20 @@ export default function AdhanScreen({ entry, isFajr }: AdhanScreenProps) {
         </p>
       </div>
 
-      {/* ── Logo ────────────────────────────────────────────────────── */}
+      {/* ── Logo ──────────────────────────────────────────────────────
+          Kept deliberately SMALL on the adhan screen: the priority here is
+          the adhan text the muezzin reads. A small logo frees the vertical
+          space the Fajr case (7 rows) needs to fit fully on the 768px TV. */}
       <div
         className="relative z-10"
-        style={{ margin: '6px 0', animation: 'adhanPulse 4s ease-in-out infinite' }}
+        style={{ margin: '2px 0', animation: 'adhanPulse 4s ease-in-out infinite' }}
       >
         <img
           src="/icons/logo.png"
           alt=""
           style={{
-            width: '120px',
-            height: '120px',
+            width: '60px',
+            height: '60px',
             objectFit: 'contain',
             filter: 'drop-shadow(0 4px 16px rgba(212,175,55,0.4))',
           }}
@@ -135,16 +138,16 @@ export default function AdhanScreen({ entry, isFajr }: AdhanScreenProps) {
       </div>
 
       {/* ── Adhan pairs ─────────────────────────────────────────────────
-          flex:1 fills remaining height after header+logo.
+          flex:1 fills remaining height after header+small logo.
           space-evenly distributes 6–7 rows with equal breathing room.
           overflow:hidden is the hard guarantee: nothing ever bleeds out.
-          Font: clamp(22px, 3.2vw, 50px) → 43.7px on the 1366px TV.
-            • 7 rows × (43.7px × 1.15 line-height) ≈ 352px
-            • Available height ≈ 768 − 14 − 57 − 80 − 132 − 50 ≈ 435px
-            • Leaves ~83px spread across 8 space-evenly gaps ✓
+          Font: clamp(22px, min(3.2vw, 5vh), 50px).
+            • width drives it on wide/tall desktop (3.2vw → 43.7px @1366)
+            • the 5vh cap takes over on the short 768px TV → ~38px, so
+              even with TV overscan all 7 Fajr rows stay fully visible:
+              7 rows × (38px × 1.18) ≈ 314px, well inside the freed space.
           whiteSpace:nowrap keeps each paired row on a single line.
-          The longest pair (shahada×2) is ~640px wide at this size — fits
-          comfortably within the 1302px content width. ────────────────── */}
+          The longest pair (shahada×2) fits within the content width. ──── */}
       <div
         className="relative z-10"
         style={{
@@ -169,8 +172,9 @@ export default function AdhanScreen({ entry, isFajr }: AdhanScreenProps) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 'clamp(10px, 1.8vw, 32px)',
-                // Responsive font: big enough for the muezzin, capped so 7 rows fit
-                fontSize: 'clamp(22px, 3.2vw, 50px)',
+                // Responsive font: big enough for the muezzin, capped by BOTH
+                // width (3.2vw) and height (5vh) so 7 rows fit on the short TV
+                fontSize: 'clamp(22px, min(3.2vw, 5vh), 50px)',
                 lineHeight: 1.15,
                 whiteSpace: 'nowrap',
                 color: isEdge ? '#F4D03F' : '#FAF7F0',
