@@ -109,13 +109,6 @@ function DiagnosticPanel() {
             {frozen ? '  ⚠️ CONGELADO' : '  ✓ OK'}
           </div>
 
-          <div>
-            🌤 Clima:{'   '}
-            {s.weatherLastUpdate
-              ? `${fmtTime(s.weatherLastUpdate)} (${ago(s.weatherLastUpdate)})`
-              : 'sin datos'}
-          </div>
-
           <div>🔄 Renders: {s.renderCount}</div>
 
           <div style={{ color: s.errorCount > 0 ? '#FF6B6B' : '#00FF41' }}>

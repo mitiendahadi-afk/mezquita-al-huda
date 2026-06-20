@@ -11,7 +11,6 @@ export interface DiagError {
 
 interface DiagState {
   clockLastUpdate: number;
-  weatherLastUpdate: number;
   renderCount: number;
   errorCount: number;
   errors: DiagError[];
@@ -21,7 +20,6 @@ interface DiagState {
 
 const state: DiagState = {
   clockLastUpdate: 0,
-  weatherLastUpdate: 0,
   renderCount: 0,
   errorCount: 0,
   errors: [],
@@ -40,10 +38,6 @@ if (typeof window !== 'undefined') {
 
 export function recordClockUpdate() {
   state.clockLastUpdate = Date.now();
-}
-
-export function recordWeatherUpdate() {
-  state.weatherLastUpdate = Date.now();
 }
 
 export function recordRender() {

@@ -1,7 +1,6 @@
 'use client';
 
 import { memo } from 'react';
-import WeatherWidget from './WeatherWidget';
 
 function HeaderBar() {
   return (
@@ -14,18 +13,6 @@ function HeaderBar() {
         background: 'linear-gradient(180deg, rgba(0,0,0,0.40) 0%, transparent 100%)',
       }}
     >
-      {/* Weather — absolute left */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '1.5rem',
-          left: '3rem',
-          zIndex: 20,
-        }}
-      >
-        <WeatherWidget />
-      </div>
-
       {/* Official logo — absolute top-right, large */}
       <div
         style={{
@@ -48,7 +35,7 @@ function HeaderBar() {
         />
       </div>
 
-      {/* Mosque name — centered with side padding to clear logo + weather */}
+      {/* Mosque name — centered with side padding to clear the logo */}
       <div
         style={{
           height: '100%',

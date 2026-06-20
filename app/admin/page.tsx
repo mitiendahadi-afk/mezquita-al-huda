@@ -525,39 +525,6 @@ export default function AdminPage() {
           <div>
             <h2 className="text-2xl font-bold mb-4" style={{ color: '#D4AF37' }}>إعدادات متقدمة</h2>
             <div className="flex flex-col gap-5 max-w-lg">
-              {/* Weather toggle */}
-              <div className="flex items-center gap-4">
-                <span className="font-bold" style={{ color: '#C8C2B0' }}>عرض الطقس:</span>
-                <button
-                  onClick={() => setSettings({ ...settings, weatherEnabled: !settings.weatherEnabled })}
-                  className="relative w-14 h-7 rounded-full transition-all"
-                  style={{ background: settings.weatherEnabled ? '#4ADE80' : '#1A5546', border: '1px solid rgba(212,175,55,0.3)', cursor: 'pointer' }}
-                >
-                  <span className="absolute top-0.5 w-6 h-6 rounded-full transition-all" style={{ background: '#FAF7F0', left: settings.weatherEnabled ? '30px' : '2px' }} />
-                </button>
-                <span style={{ color: settings.weatherEnabled ? '#4ADE80' : '#8B8676' }}>
-                  {settings.weatherEnabled ? 'مفعّل' : 'مُغلق'}
-                </span>
-              </div>
-
-              {/* Weather API key */}
-              <div>
-                <label className="block mb-2 font-bold" style={{ color: '#C8C2B0' }}>
-                  مفتاح OpenWeatherMap API:
-                </label>
-                <input
-                  type="text"
-                  value={settings.weatherApiKey || ''}
-                  onChange={e => setSettings({ ...settings, weatherApiKey: e.target.value })}
-                  placeholder="e.g. abc123def456..."
-                  className="w-full px-4 py-2 rounded-lg font-mono text-sm"
-                  style={{ background: '#1A5546', border: '1px solid rgba(212,175,55,0.3)', color: '#FAF7F0', outline: 'none', direction: 'ltr' }}
-                />
-                <p className="text-xs mt-1" style={{ color: '#8B8676', fontFamily: 'Inter', direction: 'ltr' }}>
-                  Get free key at openweathermap.org/api
-                </p>
-              </div>
-
               {/* Zikr toggle */}
               <div className="flex items-center gap-4">
                 <span className="font-bold" style={{ color: '#C8C2B0' }}>شريط الأذكار:</span>

@@ -25,9 +25,7 @@ export interface AdminSettings {
   audio: AudioSettings;
   maintenanceMode: boolean;
   maintenanceMessage: string;
-  weatherEnabled: boolean;
   zikrEnabled: boolean;
-  weatherApiKey: string;
   prayerAdjustments: Record<string, number>;
 }
 
@@ -37,9 +35,7 @@ const DEFAULT_SETTINGS: AdminSettings = {
   audio: { enabled: false, reader: 'makkah', volume: 0.7 },
   maintenanceMode: false,
   maintenanceMessage: '',
-  weatherEnabled: true,
   zikrEnabled: true,
-  weatherApiKey: '',
   prayerAdjustments: {},
 };
 
